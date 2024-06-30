@@ -1,3 +1,5 @@
+let books = [];
+
 function renderBooks() {
     for (let i = 0; i < books.length; i++) {
         let book = books[i];
@@ -14,19 +16,19 @@ function renderBooks() {
 function genreateCardHTML(i) {
     return `
         <div class="book-card">
-            <img class="book-image" src="img/${books[i].image}" alt="">
+            <div>
+             <img class="book-image" src="img/${books[i].image}" alt="">
+            ${genreateLikeHTML(i)}
+            </div>
             <div class="card-maininfo">
                 <div class="info-details">
                     <h2 class="book-title">${books[i].name}</h2>
                     <span class="book-autor">${books[i].author}</span>
                     <span class="book-genre">Genre: ${books[i].genre}</span>
-                    <span class="book-publishedYear">${books[i].publishedYear}</span>
+                    <span class="book-publishedYear">Erscheinungsjahr: ${books[i].publishedYear}</span>
                     <span class="book-price">${books[i].price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}</span>
-                    ${genreateLikeHTML(i)}
-                </div>
-                <div id="book-comments-${i}" class="book-comments">
-                </div>
                 ${genreateTabsHTML(i)}
+                 </div>
             </div>
         </div>
     `;
@@ -68,6 +70,7 @@ function genreateComments(i) {
     let comments = books[i].comments;
     let commentsHTML = '';
     if (comments.length > 0) {
+        console.log("komments vorhanden");
         for (let i = 0; i < comments.length; i++) {
             commentsHTML += genreateCommentsHTML(comments[i])
         };
@@ -100,6 +103,7 @@ function toggleLike(i) {
     books[i].liked = !books[i].liked;
     generateLikeIcon(i);
     generateLikeCounter(i);
+    saveToLocalStorage('books', books);
 }
 
 function generateLikeIcon(i) {
@@ -109,7 +113,7 @@ function generateLikeIcon(i) {
     } else {
         likeIcon = 'unliked.png'
     }
-    document.getElementById(`likeicon-${i}`).src = `img/${likeIcon}`
+    document.getElementById(`likeicon-${i}`).src = `img/${likeIcon}`;
 }
 
 function generateLikeCounter(i) {
@@ -133,15 +137,37 @@ function sendComment(i) {
             "name": author,
             "comment": text
         });
+    } else {
+        alert("leer!");
     }
-    genreateComments(i);
+
+    loadTabsContent(i, 'comments');
+    saveToLocalStorage('books', books);
+}
+
+function loadBooksFromLocalStorage(key){
+    let booksFromStorage = getFromLocalStorage(key);
+    if (booksFromStorage && booksFromStorage.length > 0) {
+        books = booksFromStorage;
+    } else {
+        books = booksDB;
+    }
+}
+
+function saveToLocalStorage(key, object) {
+    localStorage.setItem(key, JSON.stringify(object));
+}
+
+function getFromLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key));
 }
 
 function setup() {
+    loadBooksFromLocalStorage('books');
     renderBooks();
 }
 window.addEventListener('load', setup);
 
-// TODOS:
-
-// Dann muss es einen Tabs Container geben, in den entweder die Beschreibung oder die Comment-Section gerendert wird
+// TO DO: Formularvalidierung, 
+//wenn man auf Kommentare clickt sollen nicht die HTML Inhalte neu gerendert werden sondern nur die bereits im Background gerenderten Inhalte in die Box  geladen werden
+// stylen der Karten mit Tabs 

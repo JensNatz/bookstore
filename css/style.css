@@ -37,13 +37,15 @@ body {
 }
 
 .book-title {
-    font-size: 24px;
+    font-size: 32px;
     line-height: 26px;
+    margin: 0 0 8px 0;
 }
 
 .book-autor {
     font-size: 20px;
     font-weight: 700;
+    margin: 0 0 16px 0;
 }
 
 .book-genre {
@@ -51,10 +53,39 @@ body {
 }
 
 .book-price {
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 .like-icon {
     width: 30px;
     cursor: pointer;
+}
+
+.tabs-section {
+    margin: 24px 0 0 0;
+}
+
+.tab-link {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #e67e1d;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tab-link:hover{
+    color: #623e1c;
+}
+
+.tab-link-active{
+    border-bottom: 2px solid #e67e1d;
+}
+
+.tabs-container {
+    margin:  8px 0 0 0;
+    background-color: #fff;
+    height: 200px;
+    overflow: scroll;
+
 }
