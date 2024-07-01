@@ -9,7 +9,6 @@ function renderBooks() {
         generateLikeIcon(i);
         generateLikeCounter(i);
         genreateComments(i);
-        loadTabsContent(i, 'description')
     }
 }
 
@@ -21,14 +20,13 @@ function genreateCardHTML(i) {
             ${genreateLikeHTML(i)}
             </div>
             <div class="card-maininfo">
-                <div class="info-details">
-                    <h2 class="book-title">${books[i].name}</h2>
-                    <span class="book-autor">${books[i].author}</span>
-                    <span class="book-genre">Genre: ${books[i].genre}</span>
-                    <span class="book-publishedYear">Erscheinungsjahr: ${books[i].publishedYear}</span>
-                    <span class="book-price">${books[i].price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}</span>
-                ${genreateTabsHTML(i)}
-                 </div>
+                <h2 class="book-title">${books[i].name}</h2>
+                <span class="book-autor">${books[i].author}</span>
+                <span class="book-genre">Genre: ${books[i].genre}</span>
+                <span class="book-publishedYear">Erscheinungsjahr: ${books[i].publishedYear}</span>
+                <span class="book-price">${books[i].price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}</span>
+                <div class="book-comments" id="book-comments-${i}"></div>
+                ${generateCommentformHTML(i)}
             </div>
         </div>
     `;
@@ -43,42 +41,17 @@ function genreateLikeHTML(i) {
     `;
 }
 
-function genreateTabsHTML(i) {
-    return `
-        <div class="tabs-section">
-            <div class="tabs">
-                <a class="tab-link" onclick="loadTabsContent(${i}, 'description')">Beschreibung</a>
-                <a class="tab-link" onclick="loadTabsContent(${i}, 'comments')">Kommentare</a>
-            </div>
-            <div class="tabs-container" id="tabs-container-${i}">
-            </div>
-        </div>
-    `;
-}
-
-function loadTabsContent(i, key){
-    let tabContainer = document.getElementById(`tabs-container-${i}`);
-    if(key == 'description'){
-        tabContainer.innerHTML = books[i].description;
-    }
-    if(key == 'comments'){
-        tabContainer.innerHTML = genreateComments(i);
-    }
-}
-
 function genreateComments(i) {
     let comments = books[i].comments;
     let commentsHTML = '';
     if (comments.length > 0) {
-        console.log("komments vorhanden");
         for (let i = 0; i < comments.length; i++) {
             commentsHTML += genreateCommentsHTML(comments[i])
         };
     } else {
-        commentsHTML = 'Sei der erste, der einen Kommentar verfasst'
+        commentsHTML = 'Sei der erste, der eine Bewertung verfasst'
     };
-    commentsHTML += generateCommentformHTML(i)
-    return commentsHTML;
+    document.getElementById(`book-comments-${i}`).innerHTML =commentsHTML;
 }
 
 function genreateCommentsHTML(comment) {
@@ -122,27 +95,47 @@ function generateLikeCounter(i) {
 
 function generateCommentformHTML(i) {
     return `
-        <input type="text" id="input-comment-autor-${i}" placeholder="Dein Name">
-        <textarea id="input-comment-text-${i}" placeholder="Dein Kommentar"></textarea>
-        <button onclick="sendComment(${i})">Absenden</button>
+        <div class="comments-form">
+            Deine Bewertung:
+            <input type="text" id="input-comment-autor-${i}" placeholder="Dein Name">
+            <textarea id="input-comment-text-${i}" placeholder="Dein Kommentar"></textarea>
+            <button class="btn" onclick="sendComment(${i})">Absenden</button>
+        <div>
         `;
 }
 
 function sendComment(i) {
-    let author = document.getElementById(`input-comment-autor-${i}`).value;
-    let text = document.getElementById(`input-comment-text-${i}`).value;
-
+    let inputAutor = document.getElementById(`input-comment-autor-${i}`);
+    let author = inputAutor.value;
+    let inputText = document.getElementById(`input-comment-text-${i}`);
+    let text = inputText.value;
+    removeFormError(inputAutor);
+    removeFormError(inputText);
     if (author != "" && text != "") {
         books[i].comments.push({
             "name": author,
             "comment": text
         });
     } else {
-        alert("leer!");
+        if(author == ""){showFormError(inputAutor);};
+        if(text == ""){showFormError(inputText);};
     }
-
-    loadTabsContent(i, 'comments');
+    genreateComments(i);
     saveToLocalStorage('books', books);
+    clearInputfields(i);
+}
+
+function showFormError(element){
+    element.classList.add('form-error');
+}
+
+function removeFormError(element){
+    element.classList.remove('form-error');
+}
+
+function clearInputfields(i){
+    document.getElementById(`input-comment-autor-${i}`).value = "";
+    document.getElementById(`input-comment-text-${i}`).value = "";
 }
 
 function loadBooksFromLocalStorage(key){
@@ -167,7 +160,3 @@ function setup() {
     renderBooks();
 }
 window.addEventListener('load', setup);
-
-// TO DO: Formularvalidierung, 
-//wenn man auf Kommentare clickt sollen nicht die HTML Inhalte neu gerendert werden sondern nur die bereits im Background gerenderten Inhalte in die Box  geladen werden
-// stylen der Karten mit Tabs 

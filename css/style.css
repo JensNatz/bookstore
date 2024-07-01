@@ -16,13 +16,15 @@ body {
     padding: 32px;
     display: flex;
     gap: 32px;
-    border: 1px solid #00000072;
-    background-color: #00000016;
+    border: 2px solid #e67e1d;
+    border-radius: 8px;
 }
 
 .card-maininfo{
     display: flex;
+    flex-direction: column;
     gap: 8px;
+    flex: 1;
 }
 
 .book-image {
@@ -31,9 +33,12 @@ body {
     object-fit: scale-down;
 }
 
+.book-likes {
+    margin: 16px 0 0 0;
+}
+
 .info-details {
     display: flex;
-    flex-direction: column;
 }
 
 .book-title {
@@ -62,30 +67,45 @@ body {
     cursor: pointer;
 }
 
-.tabs-section {
+.book-comments {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.book-comment {
+    margin: 8px 0 0 0;
+    border-radius: 8px;
+    background-color: #e67e1d3f;
+    padding: 8px;
+}
+
+.comments-form {
+    display: flex;
+    flex-direction: column;
     margin: 24px 0 0 0;
 }
 
-.tab-link {
-    font-size: 12px;
-    text-transform: uppercase;
-    color: #e67e1d;
-    font-weight: 700;
-    cursor: pointer;
+.comment-text {
+    font-style: italic;
+} 
+
+input, textarea {
+    font: inherit;
+    border: 2px solid #e67e1d;
+    margin: 4px 0 4px 0;
+    padding: 8px;
 }
 
-.tab-link:hover{
-    color: #623e1c;
+.btn {
+    color: #ffffff;
+    padding: 8px;
+    background-color: #e67e1d;
+    border: none;
+    font-size: 16px;
+    width: 180px;
 }
 
-.tab-link-active{
-    border-bottom: 2px solid #e67e1d;
+.form-error {
+    border: 4px solid red;
 }
 
-.tabs-container {
-    margin:  8px 0 0 0;
-    background-color: #fff;
-    height: 200px;
-    overflow: scroll;
-
-}
